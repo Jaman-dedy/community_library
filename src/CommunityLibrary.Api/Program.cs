@@ -1,16 +1,18 @@
+using Serilog;
+using FluentValidation;
+
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Application.Services;
 using CommunityLibrary.Core.Interfaces.Repositories;
 using CommunityLibrary.Infrastructure.Data;
 using CommunityLibrary.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using CommunityLibrary.Application.Validators;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CommunityLibrary.Api.Middleware;
 
 /// <summary>
 /// Configures the application's services and dependency injection.
@@ -44,6 +46,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 builder.Services.AddAuthentication(x =>
@@ -63,6 +66,14 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
+// Configure Serilog
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 
 // Configure the HTTP request pipeline.
@@ -94,6 +105,8 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

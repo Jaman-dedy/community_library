@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,7 @@ namespace CommunityLibrary.Api.Controllers
     /// This controller exposes CRUD endpoints for managing reviews in the library system.
     /// </summary>
     
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ReviewController : ControllerBase

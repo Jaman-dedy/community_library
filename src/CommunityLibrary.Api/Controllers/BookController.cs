@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +12,9 @@ namespace CommunityLibrary.Api.Controllers
     /// Handles HTTP requests related to Book operations.
     /// This controller exposes CRUD endpoints for managing books in the library system.
     /// </summary>
-    /// 
+
+
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BookController : ControllerBase
@@ -40,6 +44,7 @@ namespace CommunityLibrary.Api.Controllers
             return Ok(book);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Book>> CreateBook(Book book)
         {

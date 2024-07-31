@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +12,8 @@ namespace CommunityLibrary.Api.Controllers
     /// Handles HTTP requests related to Reservation operations.
     /// This controller exposes CRUD endpoints for managing reservations in the library system.
     /// </summary>
-    /// 
+    
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ReservationController : ControllerBase
