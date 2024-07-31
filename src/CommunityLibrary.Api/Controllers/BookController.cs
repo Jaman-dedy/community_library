@@ -1,19 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
-
+using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
-using CommunityLibrary.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CommunityLibrary.Api.Controllers
 {
-    /// <summary>
-    /// Handles HTTP requests related to Book operations.
-    /// This controller exposes CRUD endpoints for managing books in the library system.
-    /// </summary>
-
-
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
@@ -27,14 +20,14 @@ namespace CommunityLibrary.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
+        public async Task<ActionResult<IEnumerable<BookDto>>> GetAllBooks()
         {
             var books = await _bookService.GetAllBooksAsync();
             return Ok(books);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookDto>> GetBook(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
             if (book == null)
@@ -44,23 +37,22 @@ namespace CommunityLibrary.Api.Controllers
             return Ok(book);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Book>> CreateBook(Book book)
+        public async Task<ActionResult<BookDto>> CreateBook(BookDto bookDto)
         {
-            var createdBook = await _bookService.AddBookAsync(book);
+            var createdBook = await _bookService.AddBookAsync(bookDto);
             return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, Book book)
+        public async Task<IActionResult> UpdateBook(int id, BookDto bookDto)
         {
-            if (id != book.Id)
+            if (id != bookDto.Id)
             {
                 return BadRequest();
             }
 
-            await _bookService.UpdateBookAsync(book);
+            await _bookService.UpdateBookAsync(bookDto);
             return NoContent();
         }
 

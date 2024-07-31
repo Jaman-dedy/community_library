@@ -4,6 +4,8 @@
 /// encapsulating the application's business rules for managing books.
 /// </summary>
 
+using AutoMapper;
+using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using CommunityLibrary.Core.Interfaces.Repositories;
@@ -15,29 +17,36 @@ namespace CommunityLibrary.Application.Services
     public class BookService : IBookService
     {
         private readonly IRepository<Book> _bookRepository;
+        private readonly IMapper _mapper;
 
-        public BookService(IRepository<Book> bookRepository)
+        public BookService(IRepository<Book> bookRepository, IMapper mapper)
         {
             _bookRepository = bookRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Book> GetBookByIdAsync(int id)
+        public async Task<BookDto> GetBookByIdAsync(int id)
         {
-            return await _bookRepository.GetByIdAsync(id);
+            var book = await _bookRepository.GetByIdAsync(id);
+            return _mapper.Map<BookDto>(book);
         }
 
-        public async Task<IEnumerable<Book>> GetAllBooksAsync()
+        public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {
-            return await _bookRepository.ListAllAsync();
+            var books = await _bookRepository.ListAllAsync();
+            return _mapper.Map<IEnumerable<BookDto>>(books);
         }
 
-        public async Task<Book> AddBookAsync(Book book)
+        public async Task<BookDto> AddBookAsync(BookDto bookDto)
         {
-            return await _bookRepository.AddAsync(book);
+            var book = _mapper.Map<Book>(bookDto);
+            var addedBook = await _bookRepository.AddAsync(book);
+            return _mapper.Map<BookDto>(addedBook);
         }
 
-        public async Task UpdateBookAsync(Book book)
+        public async Task UpdateBookAsync(BookDto bookDto)
         {
+            var book = _mapper.Map<Book>(bookDto);
             await _bookRepository.UpdateAsync(book);
         }
 

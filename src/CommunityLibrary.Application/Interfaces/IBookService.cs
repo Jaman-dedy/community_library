@@ -4,7 +4,9 @@
 /// serving as an abstraction layer between the API controllers and the data access layer.
 /// </summary>
 
-using CommunityLibrary.Core.Entities;
+// src/CommunityLibrary.Application/Interfaces/IBookService.cs
+
+using CommunityLibrary.Application.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,10 +14,10 @@ namespace CommunityLibrary.Application.Interfaces
 {
     public interface IBookService
     {
-        Task<Book> GetBookByIdAsync(int id);
-        Task<IEnumerable<Book>> GetAllBooksAsync();
-        Task<Book> AddBookAsync(Book book);
-        Task UpdateBookAsync(Book book);
+        Task<BookDto> GetBookByIdAsync(int id);
+        Task<IEnumerable<BookDto>> GetAllBooksAsync();
+        Task<BookDto> AddBookAsync(BookDto bookDto);
+        Task UpdateBookAsync(BookDto bookDto);
         Task DeleteBookAsync(int id);
     }
 }
