@@ -40,17 +40,10 @@ namespace CommunityLibrary.Api.Controllers
         /// </summary>
         /// <param name="registerDto">The registration information</param>
         /// <returns>The created user information</returns>
-        
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
         {
-            var result = await _authService.RegisterAsync(new UserDto
-            {
-                Username = registerDto.Username,
-                Email = registerDto.Email,
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName
-            }, registerDto.Password);
+            var result = await _authService.RegisterAsync(registerDto);
 
             return CreatedAtAction(nameof(Login), new { username = result.Username }, result);
         }

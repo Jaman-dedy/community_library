@@ -1,3 +1,4 @@
+using AutoMapper;
 using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
@@ -9,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using CommunityLibrary.Core.Enums; // Make sure this namespace is correct
+using CommunityLibrary.Core.Enums;
 
 namespace CommunityLibrary.Application.Services
 {
@@ -17,17 +18,19 @@ namespace CommunityLibrary.Application.Services
     {
         private readonly IRepository<User> _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthService(IRepository<User> userRepository, IConfiguration configuration)
+        public AuthService(IRepository<User> userRepository, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<string> AuthenticateAsync(string username, string password)
         {
-            var user = (await _userRepository.ListAllAsync())
-                .FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
+            var users = await _userRepository.ListAllAsync();
+            var user = users.FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
 
             if (user == null)
                 return null;
@@ -48,33 +51,18 @@ namespace CommunityLibrary.Application.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<UserDto> RegisterAsync(UserDto userDto, string password)
+        public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
         {
-            var user = new User
-            {
-                Username = userDto.Username,
-                Email = userDto.Email,
-                PasswordHash = password,
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                DateRegistered = DateTime.UtcNow,
-                IsActive = true,
-                Role = UserRole.Member
-            };
+            var user = _mapper.Map<User>(registerDto);
+            user.Role = UserRole.Member;
+            user.DateRegistered = DateTime.UtcNow;
+            user.IsActive = true;
+
+            // In a real-world scenario, you would hash the password here
+            user.PasswordHash = registerDto.Password;
 
             var createdUser = await _userRepository.AddAsync(user);
-
-            return new UserDto
-            {
-                Id = createdUser.Id,
-                Username = createdUser.Username,
-                Email = createdUser.Email,
-                FirstName = createdUser.FirstName,
-                LastName = createdUser.LastName,
-                DateRegistered = createdUser.DateRegistered,
-                IsActive = createdUser.IsActive,
-                Role = createdUser.Role.ToString()
-            };
+            return _mapper.Map<UserDto>(createdUser);
         }
     }
 }

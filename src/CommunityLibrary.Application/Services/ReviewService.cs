@@ -1,3 +1,5 @@
+using AutoMapper;
+using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using CommunityLibrary.Core.Interfaces.Repositories;
@@ -6,37 +8,39 @@ using System.Threading.Tasks;
 
 namespace CommunityLibrary.Application.Services
 {
-    /// <summary>
-    /// Implements the IReviewService interface to provide business logic for Review-related operations.
-    /// This service acts as an intermediary between the API controllers and the repository,
-    /// encapsulating the application's business rules for managing reviews.
-    /// </summary>
     public class ReviewService : IReviewService
     {
         private readonly IRepository<Review> _reviewRepository;
+        private readonly IMapper _mapper;
 
-        public ReviewService(IRepository<Review> reviewRepository)
+        public ReviewService(IRepository<Review> reviewRepository, IMapper mapper)
         {
             _reviewRepository = reviewRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Review> GetReviewByIdAsync(int id)
+        public async Task<ReviewDto> GetReviewByIdAsync(int id)
         {
-            return await _reviewRepository.GetByIdAsync(id);
+            var review = await _reviewRepository.GetByIdAsync(id);
+            return _mapper.Map<ReviewDto>(review);
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
+        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync()
         {
-            return await _reviewRepository.ListAllAsync();
+            var reviews = await _reviewRepository.ListAllAsync();
+            return _mapper.Map<IEnumerable<ReviewDto>>(reviews);
         }
 
-        public async Task<Review> AddReviewAsync(Review review)
+        public async Task<ReviewDto> CreateReviewAsync(ReviewDto reviewDto)
         {
-            return await _reviewRepository.AddAsync(review);
+            var review = _mapper.Map<Review>(reviewDto);
+            var createdReview = await _reviewRepository.AddAsync(review);
+            return _mapper.Map<ReviewDto>(createdReview);
         }
 
-        public async Task UpdateReviewAsync(Review review)
+        public async Task UpdateReviewAsync(ReviewDto reviewDto)
         {
+            var review = _mapper.Map<Review>(reviewDto);
             await _reviewRepository.UpdateAsync(review);
         }
 

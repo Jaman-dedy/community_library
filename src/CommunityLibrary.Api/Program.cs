@@ -33,6 +33,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+
 var app = builder.Build();
 
 // Configure DbContext

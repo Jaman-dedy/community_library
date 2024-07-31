@@ -1,18 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
-
+using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
-using CommunityLibrary.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CommunityLibrary.Api.Controllers
 {
-    /// <summary>
-    /// Handles HTTP requests related to Reservation operations.
-    /// This controller exposes CRUD endpoints for managing reservations in the library system.
-    /// </summary>
-    
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
@@ -26,14 +20,14 @@ namespace CommunityLibrary.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetAllReservations()
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetAllReservations()
         {
             var reservations = await _reservationService.GetAllReservationsAsync();
             return Ok(reservations);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(int id)
+        public async Task<ActionResult<ReservationDto>> GetReservation(int id)
         {
             var reservation = await _reservationService.GetReservationByIdAsync(id);
             if (reservation == null)
@@ -44,21 +38,21 @@ namespace CommunityLibrary.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Reservation>> CreateReservation(Reservation reservation)
+        public async Task<ActionResult<ReservationDto>> CreateReservation(ReservationDto reservationDto)
         {
-            var createdReservation = await _reservationService.AddReservationAsync(reservation);
+            var createdReservation = await _reservationService.CreateReservationAsync(reservationDto);
             return CreatedAtAction(nameof(GetReservation), new { id = createdReservation.Id }, createdReservation);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReservation(int id, Reservation reservation)
+        public async Task<IActionResult> UpdateReservation(int id, ReservationDto reservationDto)
         {
-            if (id != reservation.Id)
+            if (id != reservationDto.Id)
             {
                 return BadRequest();
             }
 
-            await _reservationService.UpdateReservationAsync(reservation);
+            await _reservationService.UpdateReservationAsync(reservationDto);
             return NoContent();
         }
 

@@ -1,3 +1,7 @@
+// src/CommunityLibrary.Application/Services/ReservationService.cs
+
+using AutoMapper;
+using CommunityLibrary.Application.DTOs;
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Core.Entities;
 using CommunityLibrary.Core.Interfaces.Repositories;
@@ -6,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CommunityLibrary.Application.Services
 {
+
     /// <summary>
     /// Implements the IReservationService interface to provide business logic for Reservation-related operations.
     /// This service acts as an intermediary between the API controllers and the repository,
@@ -14,29 +19,36 @@ namespace CommunityLibrary.Application.Services
     public class ReservationService : IReservationService
     {
         private readonly IRepository<Reservation> _reservationRepository;
+        private readonly IMapper _mapper;
 
-        public ReservationService(IRepository<Reservation> reservationRepository)
+        public ReservationService(IRepository<Reservation> reservationRepository, IMapper mapper)
         {
             _reservationRepository = reservationRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Reservation> GetReservationByIdAsync(int id)
+        public async Task<ReservationDto> GetReservationByIdAsync(int id)
         {
-            return await _reservationRepository.GetByIdAsync(id);
+            var reservation = await _reservationRepository.GetByIdAsync(id);
+            return _mapper.Map<ReservationDto>(reservation);
         }
 
-        public async Task<IEnumerable<Reservation>> GetAllReservationsAsync()
+        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync()
         {
-            return await _reservationRepository.ListAllAsync();
+            var reservations = await _reservationRepository.ListAllAsync();
+            return _mapper.Map<IEnumerable<ReservationDto>>(reservations);
         }
 
-        public async Task<Reservation> AddReservationAsync(Reservation reservation)
+        public async Task<ReservationDto> CreateReservationAsync(ReservationDto reservationDto)
         {
-            return await _reservationRepository.AddAsync(reservation);
+            var reservation = _mapper.Map<Reservation>(reservationDto);
+            var createdReservation = await _reservationRepository.AddAsync(reservation);
+            return _mapper.Map<ReservationDto>(createdReservation);
         }
 
-        public async Task UpdateReservationAsync(Reservation reservation)
+        public async Task UpdateReservationAsync(ReservationDto reservationDto)
         {
+            var reservation = _mapper.Map<Reservation>(reservationDto);
             await _reservationRepository.UpdateAsync(reservation);
         }
 
