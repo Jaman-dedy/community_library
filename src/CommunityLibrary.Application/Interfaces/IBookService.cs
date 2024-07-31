@@ -19,5 +19,9 @@ namespace CommunityLibrary.Application.Interfaces
         Task<BookDto> AddBookAsync(BookDto bookDto);
         Task UpdateBookAsync(BookDto bookDto);
         Task DeleteBookAsync(int id);
+        Task<IEnumerable<BookDto>> SearchBooksAsync(string searchTerm);
+        Task<bool> IsBookAvailableAsync(int bookId);
+        Task<BookDto> UpdateBookInventoryAsync(int bookId, int quantityChange);
+        Task<IEnumerable<BookDto>> GetPopularBooksAsync(int count);
     }
 }

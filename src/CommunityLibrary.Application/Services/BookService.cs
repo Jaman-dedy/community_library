@@ -58,5 +58,47 @@ namespace CommunityLibrary.Application.Services
                 await _bookRepository.DeleteAsync(book);
             }
         }
+
+        public async Task<IEnumerable<BookDto>> SearchBooksAsync(string searchTerm)
+        {
+            var books = await _bookRepository.ListAllAsync();
+            var filteredBooks = books.Where(b =>
+                b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                b.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                b.ISBN.Contains(searchTerm));
+
+            return _mapper.Map<IEnumerable<BookDto>>(filteredBooks);
+        }
+
+        public async Task<bool> IsBookAvailableAsync(int bookId)
+        {
+            var book = await _bookRepository.GetByIdAsync(bookId);
+            return book != null && book.CopiesAvailable > 0;
+        }
+
+        public async Task<BookDto> UpdateBookInventoryAsync(int bookId, int quantityChange)
+        {
+            var book = await _bookRepository.GetByIdAsync(bookId);
+            if (book == null)
+            {
+                throw new ArgumentException("Book not found", nameof(bookId));
+            }
+
+            book.CopiesAvailable += quantityChange;
+            if (book.CopiesAvailable < 0)
+            {
+                throw new InvalidOperationException("Cannot reduce inventory below zero");
+            }
+
+            await _bookRepository.UpdateAsync(book);
+            return _mapper.Map<BookDto>(book);
+        }
+
+        public async Task<IEnumerable<BookDto>> GetPopularBooksAsync(int count)
+        {
+            var books = await _bookRepository.ListAllAsync();
+            var popularBooks = books.OrderByDescending(b => b.Reservations.Count).Take(count);
+            return _mapper.Map<IEnumerable<BookDto>>(popularBooks);
+        }
     }
 }

@@ -1,15 +1,10 @@
 using CommunityLibrary.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CommunityLibrary.Application.Interfaces
 {
-
-    /// <summary>
-    /// Defines the contract for the Reservation service in the Community Library system.
-    /// This interface outlines the operations that can be performed on Reservation entities,
-    /// serving as an abstraction layer between the API controllers and the data access layer.
-    /// </summary>
     public interface IReservationService
     {
         Task<ReservationDto> GetReservationByIdAsync(int id);
@@ -17,5 +12,11 @@ namespace CommunityLibrary.Application.Interfaces
         Task<ReservationDto> CreateReservationAsync(ReservationDto reservationDto);
         Task UpdateReservationAsync(ReservationDto reservationDto);
         Task DeleteReservationAsync(int id);
+        Task<ReservationDto> CheckoutBookAsync(int userId, int bookId);
+        Task<ReservationDto> ReturnBookAsync(int reservationId);
+        Task<IEnumerable<ReservationDto>> GetOverdueReservationsAsync();
+        Task<IEnumerable<ReservationDto>> GetUserReservationsAsync(int userId);
+        Task<IEnumerable<ReservationDto>> GetBookReservationsAsync(int bookId);
+        Task ExtendReservationAsync(int reservationId, int daysToExtend);
     }
 }

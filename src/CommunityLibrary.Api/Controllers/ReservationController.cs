@@ -62,5 +62,80 @@ namespace CommunityLibrary.Api.Controllers
             await _reservationService.DeleteReservationAsync(id);
             return NoContent();
         }
+
+        [HttpPost("checkout")]
+        public async Task<ActionResult<ReservationDto>> CheckoutBook(int userId, int bookId)
+        {
+            try
+            {
+                var reservation = await _reservationService.CheckoutBookAsync(userId, bookId);
+                return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{id}/return")]
+        public async Task<ActionResult<ReservationDto>> ReturnBook(int id)
+        {
+            try
+            {
+                var reservation = await _reservationService.ReturnBookAsync(id);
+                return Ok(reservation);
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("overdue")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetOverdueReservations()
+        {
+            var reservations = await _reservationService.GetOverdueReservationsAsync();
+            return Ok(reservations);
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations(int userId)
+        {
+            var reservations = await _reservationService.GetUserReservationsAsync(userId);
+            return Ok(reservations);
+        }
+
+        [HttpGet("book/{bookId}")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetBookReservations(int bookId)
+        {
+            var reservations = await _reservationService.GetBookReservationsAsync(bookId);
+            return Ok(reservations);
+        }
+
+        [HttpPost("{id}/extend")]
+        public async Task<IActionResult> ExtendReservation(int id, [FromBody] int daysToExtend)
+        {
+            try
+            {
+                await _reservationService.ExtendReservationAsync(id, daysToExtend);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
