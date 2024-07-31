@@ -37,5 +37,3 @@ This architecture ensures:
 - Flexibility to change external dependencies without affecting the core business logic
 
 The dependencies flow inwards: WebUI/Api → Application → Core, and Infrastructure → Core. The Core project has no dependencies on other projects, maintaining the independence of the business logic.
-
-Does this summary help provide a clearer overall picture of the project structure and interaction flow?
