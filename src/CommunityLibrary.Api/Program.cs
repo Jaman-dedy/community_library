@@ -4,6 +4,9 @@ using CommunityLibrary.Core.Interfaces.Repositories;
 using CommunityLibrary.Infrastructure.Data;
 using CommunityLibrary.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using CommunityLibrary.Application.Validators;
 
 /// <summary>
 /// Configures the application's services and dependency injection.
@@ -18,6 +21,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 
 var app = builder.Build();
 

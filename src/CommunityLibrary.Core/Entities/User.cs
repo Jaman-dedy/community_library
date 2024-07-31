@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using CommunityLibrary.Core.Enums;
 
 
 namespace CommunityLibrary.Core.Entities
@@ -14,7 +14,7 @@ namespace CommunityLibrary.Core.Entities
         public required string LastName { get; set; }
         public DateTime DateRegistered { get; set; }
         public bool IsActive { get; set; }
-        public required string Role { get; set; }
+         public UserRole Role { get; set; }
         public ICollection<Reservation>? Reservations { get; set; }
         public ICollection<Review>? Reviews { get; set; }
     }
