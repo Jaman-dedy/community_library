@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  api:
+    image: communitylibrary-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=communitylibrarydb;Username=postgres;Password=password
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: communitylibrarydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
