@@ -1,0 +1,15 @@
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/bin/Debug/net8.0/CommunityLibrary.Application.deps.json
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/bin/Debug/net8.0/CommunityLibrary.Application.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/bin/Debug/net8.0/CommunityLibrary.Application.pdb
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/bin/Debug/net8.0/CommunityLibrary.Core.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/bin/Debug/net8.0/CommunityLibrary.Core.pdb
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.csproj.AssemblyReference.cache
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.AssemblyInfoInputs.cache
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.AssemblyInfo.cs
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.csproj.CoreCompileInputs.cache
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/Communit.70C72342.Up2Date
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/refint/CommunityLibrary.Application.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/CommunityLibrary.Application.pdb
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Application/obj/Debug/net8.0/ref/CommunityLibrary.Application.dll

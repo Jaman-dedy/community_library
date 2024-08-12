@@ -36,19 +36,35 @@ namespace CommunityLibrary.Application.Services
                 return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured"));
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var keyString = _configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(keyString))
             {
-                Subject = new ClaimsIdentity(new Claim[] 
+                throw new InvalidOperationException("Jwt:Key is not configured");
+            }
+
+            var key = Encoding.ASCII.GetBytes(keyString);
+
+            try
+            {
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                Console.WriteLine($"Error creating token: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<UserDto> RegisterAsync(RegisterDto registerDto)

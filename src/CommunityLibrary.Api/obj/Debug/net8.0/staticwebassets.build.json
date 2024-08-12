@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "6tB4YtsM4tK1AGLNM7PCCxhgcBX8y1AD1sG1T9nPQeE=",
+  "Source": "CommunityLibrary.Api",
+  "BasePath": "_content/CommunityLibrary.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -40,6 +40,7 @@ namespace CommunityLibrary.Application.Services
         public async Task<BookDto> AddBookAsync(BookDto bookDto)
         {
             var book = _mapper.Map<Book>(bookDto);
+            book.DateAdded = DateTime.UtcNow;
             var addedBook = await _bookRepository.AddAsync(book);
             return _mapper.Map<BookDto>(addedBook);
         }

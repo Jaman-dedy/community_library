@@ -7,14 +7,17 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - db
     environment:
+      - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Host=db;Database=communitylibrarydb;Username=postgres;Password=password
 
   db:
     image: postgres:13
+    ports:
+    - "5432:5432"
     environment:
       POSTGRES_DB: communitylibrarydb
       POSTGRES_USER: postgres

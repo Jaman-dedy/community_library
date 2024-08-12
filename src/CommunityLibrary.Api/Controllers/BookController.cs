@@ -13,10 +13,12 @@ namespace CommunityLibrary.Api.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private readonly ILogger<BookController> _logger;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, ILogger<BookController> logger)
         {
             _bookService = bookService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,10 +40,23 @@ namespace CommunityLibrary.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BookDto>> CreateBook(BookDto bookDto)
+        public async Task<ActionResult<BookDto>> CreateBook([FromBody] BookDto bookDto)
         {
-            var createdBook = await _bookService.AddBookAsync(bookDto);
-            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var createdBook = await _bookService.AddBookAsync(bookDto);
+                return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating a book");
+                return StatusCode(500, new { error = "An error occurred while processing your request.", details = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]

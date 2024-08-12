@@ -31,7 +31,12 @@ namespace CommunityLibrary.Api.Middleware
             _logger.LogError(exception, "An unhandled exception has occurred");
 
             var code = HttpStatusCode.InternalServerError;
-            var result = JsonSerializer.Serialize(new { error = "An error occurred while processing your request." });
+            var result = JsonSerializer.Serialize(new
+            {
+                error = "An error occurred while processing your request.",
+                details = exception.Message,
+                stackTrace = exception.StackTrace
+            });
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;

@@ -1,0 +1,11 @@
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/bin/Debug/net8.0/CommunityLibrary.Core.deps.json
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/bin/Debug/net8.0/CommunityLibrary.Core.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/bin/Debug/net8.0/CommunityLibrary.Core.pdb
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.AssemblyInfoInputs.cache
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.AssemblyInfo.cs
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.csproj.CoreCompileInputs.cache
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/refint/CommunityLibrary.Core.dll
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/CommunityLibrary.Core.pdb
+/Users/jeandedieuamani/all-in-one-jaman/CommunityLibrary/src/CommunityLibrary.Core/obj/Debug/net8.0/ref/CommunityLibrary.Core.dll

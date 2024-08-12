@@ -1,6 +1,5 @@
 using Serilog;
 using FluentValidation;
-
 using CommunityLibrary.Application.Interfaces;
 using CommunityLibrary.Application.Services;
 using CommunityLibrary.Core.Interfaces.Repositories;
@@ -14,17 +13,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CommunityLibrary.Api.Middleware;
 using CommunityLibrary.Application.Mappings;
-
-/// <summary>
-/// Configures the application's services and dependency injection.
-/// This includes setting up the database context, registering repositories and services,
-/// and configuring other necessary services for the API.
-/// </summary>
+using CommunityLibrary.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+// Add services to the container
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -33,25 +33,53 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
-
-var app = builder.Build();
-
 // Configure DbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+}
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<LibraryDbContext>((sp, options) =>
+    {
+        var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+        options.UseNpgsql(connectionString)
+               .EnableSensitiveDataLogging()
+               .UseLoggerFactory(loggerFactory);
+    });
+}
+else
+{
+    builder.Services.AddDbContext<LibraryDbContext>((sp, options) =>
+    {
+        var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+        options.UseNpgsql(connectionString)
+               .UseLoggerFactory(loggerFactory);
+    });
+}
+
 builder.Services.AddDbContext<LibraryDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Register services
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
+// Configure JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("JWT Key is not configured.");
+}
+var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,52 +98,36 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-// Configure Serilog
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
+// Add Migration Service
+builder.Services.AddHostedService<MigrationService>();
 
-builder.Host.UseSerilog();
+var app = builder.Build();
 
+// Configure the HTTP request pipeline
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("UseSwagger"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-
-app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.Run();
+app.MapControllers();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+app.Run();
